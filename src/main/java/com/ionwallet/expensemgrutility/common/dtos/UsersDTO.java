@@ -1,8 +1,12 @@
 package com.ionwallet.expensemgrutility.common.dtos;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class UsersDTO extends AbstractDTO {
 	
 	private int userId;
@@ -19,6 +23,8 @@ public class UsersDTO extends AbstractDTO {
 	private String phone;
 	
 	private String status;
+	
+	private List<RoleDto> roles;
 
 	public int getUserId() {
 		return userId;
@@ -74,6 +80,14 @@ public class UsersDTO extends AbstractDTO {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public List<RoleDto> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<RoleDto> roleDtos) {
+		this.roles = roleDtos;
 	}
 	
 }
