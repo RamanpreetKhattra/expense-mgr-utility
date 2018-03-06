@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.filter.GenericFilterBean;
 
+import com.ionwallet.cache.service.CachingService;
+import com.ionwallet.expensemgrutility.common.dtos.TokenDTO;
 import com.ionwallet.jwt.TokenUtils;
 import com.ionwallet.security.SecurityContextHolder;
 
@@ -24,10 +26,12 @@ public class AuthFilter extends GenericFilterBean{
 			throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		String header = httpRequest.getHeader("jwt-token");
+		String userId = CachingService.userTokenMap.get(header);
+		TokenDTO token = CachingService.tokenCache.get(userId);
 		HttpServletResponse httpResponse = (HttpServletResponse)response;
-		if(header!=null){
+		if(token!=null){
 			try {
-				Jws<Claims> claims = TokenUtils.verifyToken(header);
+				Jws<Claims> claims = TokenUtils.verifyToken(token);
 				SecurityContextHolder.claims.set(claims);
 				fc.doFilter(httpRequest, response);
 			} catch (Exception e) {

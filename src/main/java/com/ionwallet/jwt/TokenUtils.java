@@ -33,12 +33,12 @@ public class TokenUtils {
 	
 	
 	public static void main(String args[]) throws Exception {
-//		String token= issueToken("sharath@tavant.com", "ionWallet", "ionWallet");
-//		System.out.println(token);
-//		Jws<Claims> tojen = verifyToken(token);
-//		Claims body = tojen.getBody();
-//		String object = (String) body.get(USER_ID);
-//		System.out.println(EncryptionUtils.decrypt(object));
+		TokenDTO token = issueToken("sharath@tavant.com", "ionWallet", "ionWallet");
+		System.out.println(token);
+		Jws<Claims> tojen = verifyToken(token);
+		Claims body = tojen.getBody();
+		String object = (String) body.get(USER_ID);
+		System.out.println(EncryptionUtils.decrypt(object));
 	}
 	
 	
@@ -58,7 +58,7 @@ public class TokenUtils {
 					.setIssuer(issuer)
 					.setIssuedAt(now)
 					.setNotBefore(now)
-					.setExpiration(getExpiryTime(now,Calendar.SECOND,120))
+					.setExpiration(getExpiryTime(now,Calendar.SECOND,10))
 					.setAudience(audience)
 					.signWith(SignatureAlgorithm.HS256, secret)
 					.compressWith(CompressionCodecs.GZIP)
@@ -77,16 +77,17 @@ public class TokenUtils {
 	 * @return
 	 */
 	private static TokenDTO updateTokenToRegistry(String token, String userId) {
+		TokenDTO tokenDTO =null;
 		try {
 			String refreshToken = StringUtils.substring(EncryptionUtils.encrypt(token), 2, 22);
 			Date now = Date.from(Instant.now());
-			TokenDTO tokenDTO = new TokenDTO(token, refreshToken, now, getExpiryTime(now,Calendar.HOUR,1));
+			tokenDTO = new TokenDTO(token, refreshToken, now, getExpiryTime(now,Calendar.HOUR,1));
+			CachingService.userTokenMap.put(token, userId);
 			CachingService.tokenCache.put(userId, tokenDTO);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		return null;
+		return tokenDTO;
 	}
 
 
@@ -95,12 +96,21 @@ public class TokenUtils {
 	 * @param token
 	 * @return
 	 */
-	public static Jws<Claims> verifyToken(String token) {
+	public static Jws<Claims> verifyToken(TokenDTO token) {
 		try {
-			return Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-		} catch (ExpiredJwtException| UnsupportedJwtException | MalformedJwtException | SignatureException
+			return Jwts.parser().setSigningKey(secret).parseClaimsJws(token.getAccessToken());
+		} catch (UnsupportedJwtException | MalformedJwtException | SignatureException
 				| IllegalArgumentException e) {
 			throw new AuthorizationException("invalid jwt token");
+		} catch(ExpiredJwtException e) {
+			String userId = CachingService.userTokenMap.get(token.getAccessToken());
+			TokenDTO tokenDTO = CachingService.tokenCache.get(userId);
+			if(null!=tokenDTO && !tokenDTO.isExpired()) {
+				TokenDTO renewedToken = issueToken(userId, defaultIssuer, defaultAudience);
+				return Jwts.parser().setSigningKey(secret).parseClaimsJws(renewedToken.getAccessToken());
+			}else {
+				throw new AuthorizationException("Token is Expired, Login again to continue");
+			}
 		}
 	}
 

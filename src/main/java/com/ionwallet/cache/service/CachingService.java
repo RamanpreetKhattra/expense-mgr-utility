@@ -11,4 +11,6 @@ public interface CachingService {
 
 	public static LRUCache<String ,TokenDTO> tokenCache= new LRUCache<>(1000);
 	
+	public static LRUCache<String ,String> userTokenMap= new LRUCache<>(1000);
+	
 }
