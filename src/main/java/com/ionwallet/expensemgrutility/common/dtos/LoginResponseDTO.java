@@ -2,19 +2,20 @@ package com.ionwallet.expensemgrutility.common.dtos;
 
 public class LoginResponseDTO  {
 	
-	public LoginResponseDTO(String accessToken) {
+	public LoginResponseDTO(TokenDTO token) {
 		super();
-		this.accessToken = accessToken;
+		this.setToken(token);
 	}
 
-	private String accessToken;
-
-	public String getAccessToken() {
-		return accessToken;
+	public TokenDTO getToken() {
+		return token;
 	}
 
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
+	public void setToken(TokenDTO token) {
+		this.token = token;
 	}
+
+	private TokenDTO token;
+
 
 }
