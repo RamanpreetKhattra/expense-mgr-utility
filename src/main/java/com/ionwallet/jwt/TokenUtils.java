@@ -101,7 +101,7 @@ public class TokenUtils {
 			return Jwts.parser().setSigningKey(secret).parseClaimsJws(token.getAccessToken());
 		} catch (UnsupportedJwtException | MalformedJwtException | SignatureException
 				| IllegalArgumentException e) {
-			throw new AuthorizationException("invalid jwt token");
+			throw new AuthorizationException("Unauthorized, Please login again to continue");
 		} catch(ExpiredJwtException e) {
 			String userId = CachingService.userTokenMap.get(token.getAccessToken());
 			TokenDTO tokenDTO = CachingService.tokenCache.get(userId);

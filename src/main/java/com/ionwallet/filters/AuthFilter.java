@@ -25,7 +25,7 @@ public class AuthFilter extends GenericFilterBean{
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain fc)
 			throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		String header = httpRequest.getHeader("jwt-token");
+		String header = httpRequest.getHeader("access-token");
 		String userId = CachingService.userTokenMap.get(header);
 		TokenDTO token = CachingService.tokenCache.get(userId);
 		HttpServletResponse httpResponse = (HttpServletResponse)response;
@@ -40,7 +40,7 @@ public class AuthFilter extends GenericFilterBean{
 			}
 		}else{
 			httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-			writeToResponse(httpResponse, "token not found");
+			writeToResponse(httpResponse, "Invalid Token, Login again to continue");
 		}
 
 
