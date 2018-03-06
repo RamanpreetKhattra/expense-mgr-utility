@@ -26,6 +26,9 @@
 	</properties>
 
 	<dependencies>
+	
+		<!-- Spring dependency starts -->
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -42,6 +45,13 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+		</dependency>
+		
+		<!-- Spring dependency ends -->
+		
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc6</artifactId>
@@ -60,10 +70,7 @@
 		</dependency>
 
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-cassandra</artifactId>
-		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
 		<dependency>
@@ -79,9 +86,9 @@
 			<version>1.58</version>
 		</dependency>
 
-
 	</dependencies>
-
+	
+	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -93,6 +100,4 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
-
 </project>

@@ -17,8 +17,6 @@ import com.ionwallet.security.SecurityContextHolder;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 
-
-
 public class AuthFilter extends GenericFilterBean{
 	
 	@Override
