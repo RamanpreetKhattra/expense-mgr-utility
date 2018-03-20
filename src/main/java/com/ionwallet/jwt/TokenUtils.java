@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
+import org.springframework.util.StringUtils;
 
 import com.ionwallet.CustomException.AuthorizationException;
 import com.ionwallet.cache.service.CachingService;
@@ -79,7 +79,7 @@ public class TokenUtils {
 	private static TokenDTO updateTokenToRegistry(String token, String userId) {
 		TokenDTO tokenDTO =null;
 		try {
-			String refreshToken = StringUtils.substring(EncryptionUtils.encrypt(token), 2, 22);
+			String refreshToken =EncryptionUtils.encrypt(token).substring(2, 22);
 			Date now = Date.from(Instant.now());
 			tokenDTO = new TokenDTO(token, refreshToken, now, getExpiryTime(now,Calendar.HOUR,1));
 			CachingService.userTokenMap.put(token, userId);
